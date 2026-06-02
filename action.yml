@@ -1,0 +1,131 @@
+name: github-traffic-badge
+description: Render a customisable SVG traffic badge from real repository traffic data (views and clones), committed to a dedicated branch.
+author: Alberto Arena
+
+branding:
+  icon: bar-chart-2
+  color: blue
+
+inputs:
+  metric:
+    description: 'Which metric to display: views | clones | views-unique | clones-unique'
+    required: false
+    default: views
+  color:
+    description: 'Named color (blue, green, brightgreen, yellow, orange, red, grey, lightgrey, blueviolet) or a 6-character hex (no leading #)'
+    required: false
+    default: blue
+  label:
+    description: 'Left-side text of the badge'
+    required: false
+    default: 'Repo views'
+  font-size:
+    description: 'Font size in pixels, clamped to the range 8-24'
+    required: false
+    default: '11'
+  style:
+    description: 'Badge style: flat | flat-square | plastic | for-the-badge'
+    required: false
+    default: flat
+  abbreviated:
+    description: 'Abbreviate large numbers (e.g. 12345 -> 12.3K). true or false.'
+    required: false
+    default: 'false'
+  base:
+    description: 'Non-negative integer added to the displayed total (useful when migrating from another counter)'
+    required: false
+    default: '0'
+  output:
+    description: 'Filename of the rendered SVG, committed to the data branch'
+    required: false
+    default: badge.svg
+  token:
+    description: 'GitHub token used to call the Traffic API and push to the data branch. Defaults to the built-in github.token.'
+    required: false
+    default: ${{ github.token }}
+  repos:
+    description: 'Optional comma/space separated owner/repo list. Multi-repo aggregation is not yet implemented; defaults to the current repository.'
+    required: false
+    default: ''
+  branch:
+    description: 'Dedicated branch that stores totals.json and the rendered badge'
+    required: false
+    default: traffic-data
+  commit-message:
+    description: 'Commit message used when the badge or totals change'
+    required: false
+    default: 'chore: update traffic badge'
+
+outputs:
+  total:
+    description: 'The displayed total (after applying base)'
+    value: ${{ steps.run.outputs.total }}
+  badge-path:
+    description: 'Path to the rendered badge SVG inside the data branch'
+    value: ${{ steps.run.outputs.badge-path }}
+
+runs:
+  using: composite
+  steps:
+    - name: Prepare data branch workdir
+      shell: bash
+      env:
+        REPO: ${{ github.repository }}
+        BRANCH: ${{ inputs.branch }}
+        TOKEN: ${{ inputs.token }}
+      run: |
+        set -euo pipefail
+        workdir="${RUNNER_TEMP}/github-traffic-badge-data"
+        rm -rf "$workdir"
+        mkdir -p "$workdir"
+        cd "$workdir"
+        git init -q
+        git remote add origin "https://x-access-token:${TOKEN}@github.com/${REPO}.git"
+        if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
+          git fetch --depth=1 origin "$BRANCH"
+          git checkout -q "$BRANCH"
+        else
+          git checkout -q --orphan "$BRANCH"
+          git rm -rf -q . 2>/dev/null || true
+        fi
+        echo "TRAFFIC_WORKDIR=$workdir" >> "$GITHUB_ENV"
+
+    - name: Setup Node 20
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Compute traffic and render badge
+      id: run
+      shell: bash
+      working-directory: ${{ env.TRAFFIC_WORKDIR }}
+      env:
+        INPUT_METRIC: ${{ inputs.metric }}
+        INPUT_COLOR: ${{ inputs.color }}
+        INPUT_LABEL: ${{ inputs.label }}
+        INPUT_FONT_SIZE: ${{ inputs.font-size }}
+        INPUT_STYLE: ${{ inputs.style }}
+        INPUT_ABBREVIATED: ${{ inputs.abbreviated }}
+        INPUT_BASE: ${{ inputs.base }}
+        INPUT_OUTPUT: ${{ inputs.output }}
+        INPUT_TOKEN: ${{ inputs.token }}
+        INPUT_REPOS: ${{ inputs.repos }}
+      run: node "${{ github.action_path }}/src/index.js"
+
+    - name: Commit and push if changed
+      shell: bash
+      working-directory: ${{ env.TRAFFIC_WORKDIR }}
+      env:
+        BRANCH: ${{ inputs.branch }}
+        COMMIT_MESSAGE: ${{ inputs.commit-message }}
+      run: |
+        set -euo pipefail
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git add -A
+        if git diff --cached --quiet; then
+          echo "github-traffic-badge: no changes, skipping commit."
+          exit 0
+        fi
+        git commit -q -m "$COMMIT_MESSAGE"
+        git push -q origin "HEAD:${BRANCH}"
