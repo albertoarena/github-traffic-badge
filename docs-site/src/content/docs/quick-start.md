@@ -3,15 +3,29 @@ title: Quick start
 description: Set up github-traffic-badge in your repository with one workflow file and one README line.
 ---
 
-You need two things: a workflow file in your repo, and one Markdown line in
-your README that points at the rendered badge.
+You need three things: a Personal Access Token, a workflow file in your
+repo, and one Markdown line in your README that points at the rendered
+badge.
 
-## 1. Add the workflow
+## 1. Create a Personal Access Token
+
+The default `GITHUB_TOKEN` **cannot** read the Traffic API — the run will
+fail with `403 Resource not accessible by integration`. You must provide a
+PAT with one of:
+
+- **Classic PAT** with the `repo` scope, or
+- **Fine-grained PAT** with `Administration: read` on the target repository.
+
+Create it at <https://github.com/settings/tokens>, then add it as a
+repository secret (e.g. `TRAFFIC_TOKEN`) under **Settings → Secrets and
+variables → Actions**.
+
+## 2. Add the workflow
 
 Create `.github/workflows/github-traffic-badge.yml` in your repository:
 
 ```yaml
-name: github-traffic-badge
+name: GitHub Traffic Badge
 
 on:
   schedule:
@@ -27,6 +41,7 @@ jobs:
     steps:
       - uses: albertoarena/github-traffic-badge@v1
         with:
+          token: ${{ secrets.TRAFFIC_TOKEN }}
           metric: views
           color: blue
           label: 'Repo views'
@@ -35,14 +50,14 @@ jobs:
 The `permissions: contents: write` line is required so the Action can push the
 generated badge and `totals.json` to the dedicated data branch.
 
-## 2. Trigger the first run
+## 3. Trigger the first run
 
 Run the workflow once manually from the **Actions** tab (`Run workflow`) so it
 doesn't have to wait for the next cron. On the first run, the Action creates
 an **orphan** branch called `traffic-data` containing `totals.json` and the
 rendered badge — no commits land on your `main` branch.
 
-## 3. Embed the badge
+## 4. Embed the badge
 
 Add one line to any README — replace `OWNER` and `REPO` with your repo:
 

@@ -60,11 +60,26 @@ test('non-200, non-404 surfaces a clear error', async () => {
     fetchTraffic({
       owner: 'o', repo: 'r', token: 't',
       fetch: fakeFetch({
-        [url1]: { status: 403, statusText: 'rate limited', body: { message: 'API rate limit exceeded' } },
+        [url1]: { status: 500, statusText: 'server error', body: { message: 'boom' } },
         [url2]: { status: 200, body: { clones: [] } }
       })
     }),
-    /403/
+    /500/
+  );
+});
+
+test('403/401 surfaces a PAT-permission hint', async () => {
+  const url1 = `${_internals.API_BASE}/repos/o/r/traffic/views`;
+  const url2 = `${_internals.API_BASE}/repos/o/r/traffic/clones`;
+  await assert.rejects(
+    fetchTraffic({
+      owner: 'o', repo: 'r', token: 't',
+      fetch: fakeFetch({
+        [url1]: { status: 403, statusText: 'Forbidden', body: { message: 'Resource not accessible by integration' } },
+        [url2]: { status: 200, body: { clones: [] } }
+      })
+    }),
+    /Personal Access Token|Administration: read/
   );
 });
 

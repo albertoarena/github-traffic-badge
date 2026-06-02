@@ -32,6 +32,17 @@ async function getJson({ url, token, fetchImpl }) {
     }
   });
   if (res.status === 404) return { _missing: true };
+  if (res.status === 403 || res.status === 401) {
+    const body = await res.text().catch(() => '');
+    throw new Error(
+      `GitHub API ${res.status} ${res.statusText} for ${url}: the Traffic API ` +
+      `requires a token with push/admin access (a Personal Access Token with the ` +
+      `'repo' scope, or a fine-grained PAT with 'Administration: read'). The ` +
+      `default GITHUB_TOKEN does not have access to traffic endpoints. ` +
+      `See https://github.com/albertoarena/github-traffic-badge#token.` +
+      (body ? ` Response: ${body.slice(0, 200)}` : '')
+    );
+  }
   if (!res.ok) {
     const body = await res.text().catch(() => '');
     throw new Error(`GitHub API ${res.status} ${res.statusText} for ${url}${body ? `: ${body.slice(0, 200)}` : ''}`);

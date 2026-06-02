@@ -8,6 +8,7 @@ description: Common variations of the github-traffic-badge action.
 ```yaml
 - uses: albertoarena/github-traffic-badge@v1
   with:
+    token: ${{ secrets.TRAFFIC_TOKEN }}
     metric: views-unique
     label: 'Unique visitors'
     color: brightgreen
@@ -18,6 +19,7 @@ description: Common variations of the github-traffic-badge action.
 ```yaml
 - uses: albertoarena/github-traffic-badge@v1
   with:
+    token: ${{ secrets.TRAFFIC_TOKEN }}
     metric: clones
     label: 'Clones'
     color: orange
@@ -37,6 +39,7 @@ A 6-character hex (no leading `#`):
 ```yaml
 - uses: albertoarena/github-traffic-badge@v1
   with:
+    token: ${{ secrets.TRAFFIC_TOKEN }}
     color: ff66cc
 ```
 
@@ -45,6 +48,7 @@ A 6-character hex (no leading `#`):
 ```yaml
 - uses: albertoarena/github-traffic-badge@v1
   with:
+    token: ${{ secrets.TRAFFIC_TOKEN }}
     style: for-the-badge
     font-size: 14
     abbreviated: true
@@ -57,6 +61,7 @@ If you already had a counter showing 5,000, preserve the displayed total:
 ```yaml
 - uses: albertoarena/github-traffic-badge@v1
   with:
+    token: ${{ secrets.TRAFFIC_TOKEN }}
     base: 5000
 ```
 
@@ -74,6 +79,7 @@ jobs:
     steps:
       - uses: albertoarena/github-traffic-badge@v1
         with:
+          token: ${{ secrets.TRAFFIC_TOKEN }}
           metric: views
           output: views.svg
           color: blue
@@ -84,6 +90,7 @@ jobs:
     steps:
       - uses: albertoarena/github-traffic-badge@v1
         with:
+          token: ${{ secrets.TRAFFIC_TOKEN }}
           metric: clones
           output: clones.svg
           color: orange
@@ -97,6 +104,7 @@ If `traffic-data` collides with something in your repo, change it:
 ```yaml
 - uses: albertoarena/github-traffic-badge@v1
   with:
+    token: ${{ secrets.TRAFFIC_TOKEN }}
     branch: badge-data
 ```
 

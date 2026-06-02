@@ -8,20 +8,20 @@ warning in the Action log — the run never fails because of bad configuration.
 
 ## Inputs
 
-| Input            | Default                  | Description |
-|------------------|--------------------------|-------------|
-| `metric`         | `views`                  | One of `views`, `clones`, `views-unique`, `clones-unique`. |
-| `color`          | `blue`                   | Named color, or a 6-character hex (no leading `#`). Named colors: `blue`, `green`, `brightgreen`, `yellow`, `orange`, `red`, `grey`, `lightgrey`, `blueviolet`. |
-| `label`          | `Repo views`             | Left-side text. Special characters are XML-escaped automatically. |
-| `font-size`      | `11`                     | Font size in pixels. Clamped to the range 8–24. |
-| `style`          | `flat`                   | One of `flat`, `flat-square`, `plastic`, `for-the-badge`. |
-| `abbreviated`    | `false`                  | Abbreviate large numbers (`12345` → `12.3K`). |
-| `base`           | `0`                      | Non-negative integer offset added to the displayed total. Useful when migrating from another counter. |
-| `output`         | `badge.svg`              | Filename of the badge committed to the data branch. |
-| `token`          | `${{ github.token }}`    | Token used for the Traffic API and to push to the data branch. The built-in token works for the same repo; use a PAT for cross-repo. |
-| `repos`          | current repo             | Comma/space separated `owner/repo` list. Multi-repo aggregation is not yet implemented; falls back to the current repository with a warning. |
-| `branch`         | `traffic-data`           | Dedicated branch where `totals.json` and the badge are stored. |
-| `commit-message` | `chore: update traffic badge` | Commit message used when the badge or totals change. |
+| Input            | Required | Default                  | Description |
+|------------------|----------|--------------------------|-------------|
+| `token`          | **yes**  | —                        | Personal Access Token used for the Traffic API. The default `GITHUB_TOKEN` does **not** work — Traffic endpoints require push/admin access. Use a classic PAT with `repo` scope, or a fine-grained PAT with `Administration: read`. |
+| `metric`         | no       | `views`                  | One of `views`, `clones`, `views-unique`, `clones-unique`. |
+| `color`          | no       | `blue`                   | Named color, or a 6-character hex (no leading `#`). Named colors: `blue`, `green`, `brightgreen`, `yellow`, `orange`, `red`, `grey`, `lightgrey`, `blueviolet`. |
+| `label`          | no       | `Repo views`             | Left-side text. Special characters are XML-escaped automatically. |
+| `font-size`      | no       | `11`                     | Font size in pixels. Clamped to the range 8–24. |
+| `style`          | no       | `flat`                   | One of `flat`, `flat-square`, `plastic`, `for-the-badge`. |
+| `abbreviated`    | no       | `false`                  | Abbreviate large numbers (`12345` → `12.3K`). |
+| `base`           | no       | `0`                      | Non-negative integer offset added to the displayed total. Useful when migrating from another counter. |
+| `output`         | no       | `badge.svg`              | Filename of the badge committed to the data branch. |
+| `repos`          | no       | current repo             | Comma/space separated `owner/repo` list. Multi-repo aggregation is not yet implemented; falls back to the current repository with a warning. |
+| `branch`         | no       | `traffic-data`           | Dedicated branch where `totals.json` and the badge are stored. |
+| `commit-message` | no       | `chore: update traffic badge` | Commit message used when the badge or totals change. |
 
 ## Outputs
 

@@ -1,5 +1,5 @@
-name: github-traffic-badge
-description: Render a customisable SVG traffic badge from real repository traffic data (views and clones), committed to a dedicated branch.
+name: GitHub Traffic Badge
+description: Render a customisable SVG traffic badge from real repository traffic data (views and clones), committed to a dedicated branch. Requires a PAT with repo or Administration:read access (the default GITHUB_TOKEN cannot read traffic endpoints).
 author: Alberto Arena
 
 branding:
@@ -40,9 +40,8 @@ inputs:
     required: false
     default: badge.svg
   token:
-    description: 'GitHub token used to call the Traffic API and push to the data branch. Defaults to the built-in github.token.'
-    required: false
-    default: ${{ github.token }}
+    description: 'Personal Access Token used to call the Traffic API. REQUIRED — the default GITHUB_TOKEN cannot read traffic endpoints (you will get a 403). Use a classic PAT with the "repo" scope, or a fine-grained PAT with "Administration: read" on the target repository, stored as a repository secret.'
+    required: true
   repos:
     description: 'Optional comma/space separated owner/repo list. Multi-repo aggregation is not yet implemented; defaults to the current repository.'
     required: false
