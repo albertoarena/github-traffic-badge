@@ -1,0 +1,19 @@
+# IDE
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Local-only scratch docs
+/.docs/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm/
+
+# Env
+.env
+.env.local
