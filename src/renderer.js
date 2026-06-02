@@ -32,6 +32,16 @@ function resolveColor(color) {
   return NAMED_COLORS[DEFAULT_COLOR];
 }
 
+/**
+ * Abbreviate a number into a short, badge-friendly form (K, M, B).
+ *
+ * Truncates (does not round) so the displayed value never exceeds the actual
+ * count. Examples: 999 -> "999", 1000 -> "1K", 12345 -> "12.3K",
+ * 1_500_000 -> "1.5M". Non-finite input yields "0".
+ *
+ * @param {number} n number to abbreviate
+ * @returns {string} abbreviated text
+ */
 export function abbreviate(n) {
   const num = Number(n);
   if (!Number.isFinite(num)) return '0';
@@ -75,6 +85,19 @@ function styleGeometry(style, fontSize) {
   }
 }
 
+/**
+ * Render the badge as a standalone SVG string.
+ *
+ * Pure: same inputs always produce the same output, no I/O. Width scales with
+ * `text length * fontSize * 0.6` so longer labels and larger fonts don't
+ * overflow the colored value rect. Label and value are XML-escaped.
+ * Style branches: flat (default), flat-square (no rounded corners), plastic
+ * (adds a gradient overlay), for-the-badge (uppercased, taller, letter-spaced).
+ *
+ * @param {number} total integer total produced by accumulator.totalFor
+ * @param {Object} options validated options object from options.parseOptions
+ * @returns {string} a standalone SVG document
+ */
 export function render(total, options) {
   const fontSize = options.fontSize ?? 11;
   const style = options.style ?? 'flat';

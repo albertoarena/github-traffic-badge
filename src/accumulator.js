@@ -7,6 +7,11 @@ const METRIC_TO_BUCKET = {
   'clones-unique': { bucket: 'clones', field: 'uniques' }
 };
 
+/**
+ * Build an empty persisted state with the current schema version.
+ *
+ * @returns {{ schema: number, updatedAt: null, views: Object, clones: Object }}
+ */
 export function emptyState() {
   return { schema: SCHEMA_VERSION, updatedAt: null, views: {}, clones: {} };
 }
@@ -38,6 +43,23 @@ function upsertBucket(bucket, entries) {
   return bucket;
 }
 
+/**
+ * Merge fresh Traffic-API data into the persisted state.
+ *
+ * Core invariant: entries are upserted by date key, never summed. Because the
+ * Traffic API always returns the last 14 days, summing would double-count the
+ * 13 overlapping days on every daily run. Upserting makes a run on identical
+ * input a no-op (idempotency). The total is derived as the sum of the map.
+ *
+ * Pure and non-mutating: returns a new state object; the input is unchanged.
+ * Malformed entries (missing date, non-numeric count/uniques) are skipped or
+ * coerced to 0 rather than throwing.
+ *
+ * @param {Object|null|undefined} existing prior persisted state, or null/undefined
+ * @param {{ views?: Array, clones?: Array }} fresh normalised Traffic-API data
+ * @param {{ now?: string }} [opts] override the updatedAt timestamp (testing)
+ * @returns {Object} new state with merged views/clones and refreshed updatedAt
+ */
 export function mergeTraffic(existing, fresh, { now } = {}) {
   const next = normalizeState(existing);
   const safeFresh = fresh && typeof fresh === 'object' ? fresh : {};
@@ -47,6 +69,15 @@ export function mergeTraffic(existing, fresh, { now } = {}) {
   return next;
 }
 
+/**
+ * Compute the displayed total for the selected metric, plus an optional base.
+ *
+ * @param {Object} state persisted state produced by mergeTraffic / emptyState
+ * @param {'views'|'clones'|'views-unique'|'clones-unique'} metric metric to sum
+ * @param {number} [base=0] non-negative integer offset added to the total
+ * @returns {number} integer total
+ * @throws {Error} if metric is not one of the four supported keys
+ */
 export function totalFor(state, metric, base = 0) {
   const mapping = METRIC_TO_BUCKET[metric];
   if (!mapping) throw new Error(`Unknown metric: ${metric}`);

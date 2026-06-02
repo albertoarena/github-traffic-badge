@@ -60,6 +60,29 @@ function parseRepos(raw) {
   return t.split(/[\s,]+/).map(s => s.trim()).filter(Boolean);
 }
 
+/**
+ * Parse and validate raw action inputs into a typed options object.
+ *
+ * Pure: never throws, never performs I/O. Unknown or malformed inputs fall back
+ * to defaults and produce a warning string in the returned `warnings` array, so
+ * the caller (the impure index module) can decide how to surface them.
+ *
+ * Recognised input keys (all optional, mirror `action.yml`):
+ *   - `metric`: views | clones | views-unique | clones-unique
+ *   - `color`: named color (blue, green, brightgreen, yellow, orange, red,
+ *     grey, lightgrey, blueviolet) or 6-char hex without `#`
+ *   - `label`: left-side text
+ *   - `font-size` | `fontSize`: integer clamped to [8, 24]
+ *   - `style`: flat | flat-square | plastic | for-the-badge
+ *   - `abbreviated`: boolean or "true"/"false"
+ *   - `base`: non-negative integer added to the displayed total
+ *   - `output`: badge filename
+ *   - `token`: GitHub token (passed through verbatim)
+ *   - `repos`: comma/space separated owner/repo list, array, or "all"
+ *
+ * @param {Record<string, unknown>} [input] raw input object (typically from env)
+ * @returns {{ options: Object, warnings: string[] }} validated options and warnings
+ */
 export function parseOptions(input = {}) {
   const warnings = [];
   const opts = { ...DEFAULTS };

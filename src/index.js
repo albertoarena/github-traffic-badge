@@ -37,6 +37,24 @@ async function appendOutput(path, lines, writeFile) {
   await writeFile(path, lines.map(l => `${l}\n`).join(''), { flag: 'a' });
 }
 
+/**
+ * Orchestrate one run of the badge pipeline: read inputs, load existing state,
+ * fetch fresh Traffic-API data, merge with upsert/dedup, render the SVG, and
+ * persist totals.json and the badge file.
+ *
+ * The impure layer (filesystem, network, clock, logger) is fully injected so
+ * the wire-up itself is testable without disk or network. Inputs are read from
+ * `env` using the GitHub Actions `INPUT_<NAME>` convention. If `GITHUB_OUTPUT`
+ * is set, the action's outputs (`total`, `badge-path`) are appended to it.
+ *
+ * Multi-repo aggregation (`repos: all` or a list with more than one entry) is
+ * not yet implemented; in that case the run warns and falls back to the
+ * current repository identified by `GITHUB_REPOSITORY`.
+ *
+ * @param {Object} [deps] dependency injection seam (defaults wire real I/O)
+ * @returns {Promise<{ total: number, badgePath: string, state: Object, svg: string }>}
+ * @throws {Error} when no repository can be resolved or the API call fails
+ */
 export async function runAction({
   env = process.env,
   readFile = fs.readFile,

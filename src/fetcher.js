@@ -39,6 +39,19 @@ async function getJson({ url, token, fetchImpl }) {
   return res.json();
 }
 
+/**
+ * Fetch repository traffic (views and clones) from the GitHub Traffic API.
+ *
+ * Impure but thin: the `fetch` implementation is injected so tests can
+ * substitute a fake. The two endpoints are called in parallel, timestamps are
+ * normalised to YYYY-MM-DD date keys, and a 404 is treated as an empty result
+ * (e.g. when the token lacks access to a specific repo) rather than an error.
+ * Any other non-200 response is surfaced as a clear Error with status and body.
+ *
+ * @param {{ owner: string, repo: string, token?: string, fetch?: Function }} args
+ * @returns {Promise<{ views: Array<{date:string,count:number,uniques:number}>, clones: Array<{date:string,count:number,uniques:number}> }>}
+ * @throws {Error} on missing owner/repo, missing fetch, or non-200/non-404 response
+ */
 export async function fetchTraffic({ owner, repo, token, fetch: fetchImpl = globalThis.fetch }) {
   if (!owner || !repo) throw new Error('fetchTraffic: owner and repo are required');
   if (typeof fetchImpl !== 'function') throw new Error('fetchTraffic: a fetch implementation is required');
