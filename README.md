@@ -5,7 +5,8 @@ repository traffic data (views and clones reported by the GitHub Traffic API),
 and commits it to a dedicated branch in your repo so you can embed it in any
 README.
 
-Repository: <https://github.com/albertoarena/github-traffic-badge>
+- **Repository:** <https://github.com/albertoarena/github-traffic-badge>
+- **Documentation:** <https://albertoarena.github.io/github-traffic-badge/>
 
 > **What this counts:** real **repository traffic** — views and clones — from
 > the official GitHub Traffic API.
@@ -153,6 +154,12 @@ node --test
 
 Node 20+ is required. The project has **zero runtime dependencies** — this
 is enforced in CI.
+
+## Documentation
+
+Full documentation — quick start, configuration reference, how it works,
+examples, and contributing — is published at
+<https://albertoarena.github.io/github-traffic-badge/>.
 
 ## License
 
