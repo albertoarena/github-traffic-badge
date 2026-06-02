@@ -160,13 +160,61 @@ text length × font-size, or text overflows). Width computation is pure and must
    badge URL pointing at the `traffic-data` branch.
 10. Run full suite; confirm green; confirm zero deps in `package.json`.
 
+## Project identity (URLs)
+
+- **Repository:** https://github.com/albertoarena/github-traffic-badge
+- Always link to this URL in user-facing docs (README, docs site, action metadata).
+- Never reference any other repository in CLAUDE.md, code, or documentation.
+
+## Documentation
+
+Everything must be documented. "Done" is not "code works" — it's "code works AND a
+stranger can understand, install, configure, and contribute to it".
+
+Scope of "everything":
+- Every exported function and module has a JSDoc block (purpose, params, returns,
+  thrown/warning behaviour). Pure modules document invariants (e.g. the upsert/dedup
+  property of the accumulator).
+- Every action input is documented in `action.yml` AND on the docs site.
+- Every configuration choice, validation rule, and fallback is documented.
+- The README covers the honest framing (repo traffic, not profile views), the
+  one-workflow setup, and the full customisation table.
+
+### Docs website (Astro + Starlight)
+
+Ship a documentation website built with **Astro** using the **Starlight** docs theme,
+deployed via **GitHub Pages** from this repo. Treat it as part of the product.
+
+- Location: `/docs-site/` at the repo root (a self-contained Astro project; it is
+  separate from any local `/.docs/` scratch directory, which is gitignored).
+- Framework: Astro + `@astrojs/starlight`. No other docs frameworks.
+- Deploy: GitHub Pages via a workflow in `.github/workflows/docs.yml` that builds and
+  publishes on push to `main`. The site is served at the repo's GitHub Pages URL.
+- Required sections:
+  - **Introduction** — what this is (a traffic badge), what it is not (profile views).
+  - **Quick start** — one workflow file, one README line, the resulting badge URL.
+  - **Configuration** — full inputs table mirroring `action.yml`, with validation rules
+    and defaults.
+  - **How it works** — data flow, the dedup invariant, the `traffic-data` branch.
+  - **Examples** — common styles, colors, multi-repo aggregation.
+  - **Contributing** — local dev, running tests, project structure.
+- The site must link prominently to https://github.com/albertoarena/github-traffic-badge.
+- Keep the docs site zero-runtime-dep relative to the Action itself: Astro/Starlight
+  dependencies live only inside `/docs-site/package.json` and never leak into the
+  Action's `package.json`.
+
 ## Definition of done
 
-- `node --test` passes, zero dependencies in `package.json`.
+- `node --test` passes, zero dependencies in the Action's `package.json`.
 - Accumulator dedup + idempotency proven by tests.
 - All customisation inputs work and are validated.
 - README lets a stranger set it up with one workflow file and one README line.
 - README states plainly: this counts repo traffic, not profile views.
+- All code, modules, and inputs are documented (JSDoc + `action.yml` descriptions).
+- The Astro/Starlight docs website under `/docs-site/` is updated to reflect any
+  change in behaviour, inputs, or architecture, and builds cleanly in CI.
+- Docs website deploys to GitHub Pages and links to
+  https://github.com/albertoarena/github-traffic-badge.
 
 ## Git Commit Conventions
 
