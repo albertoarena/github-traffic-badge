@@ -1,0 +1,14 @@
+{
+  "name": "github-traffic-badge",
+  "version": "0.1.0",
+  "description": "GitHub Action that renders a customisable SVG traffic badge from real repository traffic data.",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "license": "MIT"
+}
