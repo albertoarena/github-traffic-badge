@@ -97,6 +97,7 @@ default and emit a warning in the Action log.
 | `font-size`      | no       | `11`                     | Font size in pixels. Clamped to 8–24. |
 | `style`          | no       | `flat`                   | One of `flat`, `flat-square`, `plastic`, `for-the-badge`. |
 | `abbreviated`    | no       | `false`                  | Abbreviate large numbers (`12345` → `12.3K`). |
+| `lowercase`      | no       | `false`                  | Render the label in lowercase (matches the style of most shields.io badges). No effect with the `for-the-badge` style, which is inherently uppercase. |
 | `base`           | no       | `0`                      | Non-negative integer offset added to the displayed total. |
 | `output`         | no       | `badge.svg`              | Filename of the badge committed to the data branch. |
 | `repos`          | no       | current repo             | Comma/space separated `owner/repo` list. Multi-repo aggregation is not yet implemented; falls back to the current repository with a warning. |

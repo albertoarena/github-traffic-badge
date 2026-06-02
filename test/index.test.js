@@ -83,6 +83,36 @@ test('runAction: base is added to total', async () => {
   assert.equal(result.total, 1010);
 });
 
+test('runAction: INPUT_LOWERCASE wires through to the rendered SVG', async () => {
+  const fs = makeFs();
+  const fetch = makeFetch(
+    { views: [{ timestamp: '2026-05-20T00:00:00Z', count: 1, uniques: 1 }] },
+    { clones: [] }
+  );
+  await runAction({
+    env: { GITHUB_REPOSITORY: 'o/r', INPUT_LABEL: 'Repo Views', INPUT_LOWERCASE: 'true' },
+    readFile: fs.readFile, writeFile: fs.writeFile,
+    fetch, log: silentLog(), now: () => '2026-06-02T03:00:00Z'
+  });
+  const svg = fs.files['badge.svg'];
+  assert.ok(svg.includes('repo views'), 'expected lowercased label in svg');
+  assert.ok(!svg.includes('Repo Views'), 'original casing should not appear');
+});
+
+test('runAction: lowercase default (no INPUT_LOWERCASE) preserves casing', async () => {
+  const fs = makeFs();
+  const fetch = makeFetch(
+    { views: [{ timestamp: '2026-05-20T00:00:00Z', count: 1, uniques: 1 }] },
+    { clones: [] }
+  );
+  await runAction({
+    env: { GITHUB_REPOSITORY: 'o/r', INPUT_LABEL: 'Repo Views' },
+    readFile: fs.readFile, writeFile: fs.writeFile,
+    fetch, log: silentLog(), now: () => '2026-06-02T03:00:00Z'
+  });
+  assert.ok(fs.files['badge.svg'].includes('Repo Views'));
+});
+
 test('runAction: writes GITHUB_OUTPUT when present', async () => {
   const fs = makeFs();
   const fetch = makeFetch({ views: [] }, { clones: [] });

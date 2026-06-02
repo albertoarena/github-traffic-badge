@@ -118,6 +118,25 @@ test('invalid abbreviated falls back with warning', () => {
   assert.equal(warnings.length, 1);
 });
 
+test('lowercase defaults to false', () => {
+  assert.equal(parseOptions().options.lowercase, false);
+});
+
+test('lowercase parses boolean and string', () => {
+  assert.equal(parseOptions({ lowercase: true }).options.lowercase, true);
+  assert.equal(parseOptions({ lowercase: 'true' }).options.lowercase, true);
+  assert.equal(parseOptions({ lowercase: 'TRUE' }).options.lowercase, true);
+  assert.equal(parseOptions({ lowercase: 'false' }).options.lowercase, false);
+  assert.equal(parseOptions({ lowercase: false }).options.lowercase, false);
+});
+
+test('invalid lowercase falls back with warning', () => {
+  const { options, warnings } = parseOptions({ lowercase: 'sometimes' });
+  assert.equal(options.lowercase, DEFAULTS.lowercase);
+  assert.equal(warnings.length, 1);
+  assert.match(warnings[0], /lowercase/i);
+});
+
 test('base accepts non-negative integers', () => {
   assert.equal(parseOptions({ base: '1234' }).options.base, 1234);
   assert.equal(parseOptions({ base: 0 }).options.base, 0);

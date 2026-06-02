@@ -70,6 +70,7 @@ export async function runAction({
     'font-size': readInput(env, 'font-size'),
     style: readInput(env, 'style'),
     abbreviated: readInput(env, 'abbreviated'),
+    lowercase: readInput(env, 'lowercase'),
     base: readInput(env, 'base'),
     output: readInput(env, 'output'),
     token: readInput(env, 'token'),

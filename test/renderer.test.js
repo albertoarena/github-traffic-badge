@@ -85,6 +85,30 @@ test('for-the-badge style uppercases the label', () => {
   assert.ok(svg.includes('REPO VIEWS'));
 });
 
+test('lowercase off (default): label rendered with original casing', () => {
+  const svg = render(1, defaults({ label: 'Repo Views' }));
+  assert.ok(svg.includes('Repo Views'));
+  assert.ok(!svg.includes('repo views'));
+});
+
+test('lowercase on: label is rendered lowercase', () => {
+  const svg = render(1, defaults({ label: 'Repo Views', lowercase: true }));
+  assert.ok(svg.includes('repo views'));
+  assert.ok(!svg.includes('Repo Views'));
+});
+
+test('lowercase preserves non-letter characters and whitespace', () => {
+  const svg = render(1, defaults({ label: 'My-Repo  V1', lowercase: true }));
+  assert.ok(svg.includes('my-repo  v1'));
+});
+
+test('for-the-badge still uppercases even when lowercase is true', () => {
+  // for-the-badge is inherently uppercase per shields.io convention; the style
+  // wins over the lowercase flag.
+  const svg = render(1, defaults({ style: 'for-the-badge', label: 'Repo Views', lowercase: true }));
+  assert.ok(svg.includes('REPO VIEWS'));
+});
+
 test('flat-square style uses no corner radius', () => {
   const svg = render(1, defaults({ style: 'flat-square' }));
   assert.ok(!/\brx="[1-9]/.test(svg), 'flat-square should not have rounded corners');

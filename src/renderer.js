@@ -105,6 +105,7 @@ export function render(total, options) {
 
   let labelText = options.label ?? '';
   const valueText = options.abbreviated ? abbreviate(total) : String(Math.trunc(Number(total) || 0));
+  if (options.lowercase) labelText = labelText.toLowerCase();
   if (geom.uppercase) labelText = labelText.toUpperCase();
 
   const labelW = Math.ceil(textWidth(labelText, fontSize) + SIDE_PADDING * 2);

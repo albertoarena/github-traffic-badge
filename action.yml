@@ -31,6 +31,10 @@ inputs:
     description: 'Abbreviate large numbers (e.g. 12345 -> 12.3K). true or false.'
     required: false
     default: 'false'
+  lowercase:
+    description: 'Render the label in lowercase (matches the style of most shields.io badges). true or false. Has no effect with the for-the-badge style, which is inherently uppercase.'
+    required: false
+    default: 'false'
   base:
     description: 'Non-negative integer added to the displayed total (useful when migrating from another counter)'
     required: false
@@ -105,6 +109,7 @@ runs:
         INPUT_FONT_SIZE: ${{ inputs.font-size }}
         INPUT_STYLE: ${{ inputs.style }}
         INPUT_ABBREVIATED: ${{ inputs.abbreviated }}
+        INPUT_LOWERCASE: ${{ inputs.lowercase }}
         INPUT_BASE: ${{ inputs.base }}
         INPUT_OUTPUT: ${{ inputs.output }}
         INPUT_TOKEN: ${{ inputs.token }}

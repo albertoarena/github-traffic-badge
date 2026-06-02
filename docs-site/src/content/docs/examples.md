@@ -54,6 +54,23 @@ A 6-character hex (no leading `#`):
     abbreviated: true
 ```
 
+## Lowercase label (shields.io style)
+
+Most badges on shields.io render their label in lowercase. Pass
+`lowercase: true` to match that look:
+
+```yaml
+- uses: albertoarena/github-traffic-badge@v1
+  with:
+    token: ${{ secrets.TRAFFIC_TOKEN }}
+    label: 'Repo views'
+    lowercase: true
+```
+
+Renders the left side as `repo views` regardless of the casing you pass in
+`label`. The `for-the-badge` style still uppercases (that's part of the
+style), so combining the two has no visible effect.
+
 ## Migrating from another counter
 
 If you already had a counter showing 5,000, preserve the displayed total:

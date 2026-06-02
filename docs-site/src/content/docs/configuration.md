@@ -17,6 +17,7 @@ warning in the Action log — the run never fails because of bad configuration.
 | `font-size`      | no       | `11`                     | Font size in pixels. Clamped to the range 8–24. |
 | `style`          | no       | `flat`                   | One of `flat`, `flat-square`, `plastic`, `for-the-badge`. |
 | `abbreviated`    | no       | `false`                  | Abbreviate large numbers (`12345` → `12.3K`). |
+| `lowercase`      | no       | `false`                  | Render the label in lowercase (matches the style of most shields.io badges). No effect with the `for-the-badge` style, which is inherently uppercase. |
 | `base`           | no       | `0`                      | Non-negative integer offset added to the displayed total. Useful when migrating from another counter. |
 | `output`         | no       | `badge.svg`              | Filename of the badge committed to the data branch. |
 | `repos`          | no       | current repo             | Comma/space separated `owner/repo` list. Multi-repo aggregation is not yet implemented; falls back to the current repository with a warning. |
@@ -44,6 +45,9 @@ specific rule:
 - **`style`** — must be one of the four allowed styles, case-insensitive.
 - **`abbreviated`** — accepts a boolean or the strings `"true"`/`"false"`,
   case-insensitive.
+- **`lowercase`** — accepts a boolean or the strings `"true"`/`"false"`,
+  case-insensitive. The `for-the-badge` style always uppercases its label
+  (shields.io convention), so `lowercase: true` has no visible effect there.
 - **`base`** — must be a non-negative integer. Negative or non-integer input
   falls back to `0`.
 - **`repos`** — accepts a comma/space separated string, an array of strings,

@@ -21,6 +21,7 @@ const DEFAULTS = Object.freeze({
   fontSize: 11,
   style: 'flat',
   abbreviated: false,
+  lowercase: false,
   base: 0,
   output: 'badge.svg',
   token: '',
@@ -75,6 +76,7 @@ function parseRepos(raw) {
  *   - `font-size` | `fontSize`: integer clamped to [8, 24]
  *   - `style`: flat | flat-square | plastic | for-the-badge
  *   - `abbreviated`: boolean or "true"/"false"
+ *   - `lowercase`: boolean or "true"/"false" — render the label in lowercase
  *   - `base`: non-negative integer added to the displayed total
  *   - `output`: badge filename
  *   - `token`: GitHub token (passed through verbatim)
@@ -141,6 +143,15 @@ export function parseOptions(input = {}) {
       warnings.push(`Invalid abbreviated "${input.abbreviated}", falling back to ${DEFAULTS.abbreviated}.`);
     } else {
       opts.abbreviated = b;
+    }
+  }
+
+  if (isPresent(input.lowercase)) {
+    const b = parseBool(input.lowercase);
+    if (b === null) {
+      warnings.push(`Invalid lowercase "${input.lowercase}", falling back to ${DEFAULTS.lowercase}.`);
+    } else {
+      opts.lowercase = b;
     }
   }
 
