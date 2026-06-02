@@ -160,6 +160,29 @@ text length × font-size, or text overflows). Width computation is pure and must
    badge URL pointing at the `traffic-data` branch.
 10. Run full suite; confirm green; confirm zero deps in `package.json`.
 
+## TDD is mandatory
+
+Every change to a **pure** module (`options.js`, `accumulator.js`, `renderer.js`) MUST follow
+the red-green cycle:
+
+1. Write the failing test(s) first. Run the suite and **see them fail** — that proves the
+   test actually exercises the new behaviour.
+2. Implement the smallest change that turns the new tests green without breaking existing
+   tests.
+3. Refactor only after green.
+
+Applies to **all new behaviour**: new inputs, new option flags, new branches in the
+renderer, new accumulator rules, new validation paths. Even one-line additions get tests
+first — they're the cheapest to write and the easiest to forget.
+
+Acceptable exceptions (still rare): pure plumbing in the impure layer (action.yml input
+forwarding, env var name additions in `index.js` that just thread a value through to
+already-tested options). When in doubt, write the test.
+
+If you catch yourself implementing before testing, stop, revert the implementation, write
+the test, watch it fail, then re-implement. Don't rationalise it as "I'll add tests after"
+— that's how regressions land.
+
 ## Project identity (URLs)
 
 - **Repository:** https://github.com/albertoarena/github-traffic-badge
@@ -212,6 +235,39 @@ deployed via **GitHub Pages** from this repo. Treat it as part of the product.
 - Keep the docs site zero-runtime-dep relative to the Action itself: Astro/Starlight
   dependencies live only inside `/docs-site/package.json` and never leak into the
   Action's `package.json`.
+
+## Pre-commit checklist
+
+Before every commit that changes behaviour (new input, renderer branch, accumulator
+rule, validation rule, fetcher response handling), confirm **all** of these — in this
+order:
+
+1. **Tests written first.** Per the TDD section: failing tests for the new behaviour
+   landed before the implementation. Re-read the diff and verify.
+2. **All tests green.** `npm test` from the repo root. Don't commit a red suite "to be
+   fixed in the next commit".
+3. **`action.yml` updated.** New input declared with description + default + `required`,
+   and forwarded as `INPUT_<NAME>` in the composite step's `env:` block. The name in
+   `action.yml` is the source of truth — the README and docs site mirror it.
+4. **`src/index.js` updated.** New input added to the `rawInputs` object in `runAction`
+   so it reaches `parseOptions`.
+5. **JSDoc updated.** Any new option key appears in the `parseOptions` docblock list
+   (`src/options.js`). Public functions whose contract changed have their `@param`/
+   `@returns` updated.
+6. **README inputs table updated.** A new row in the table at `README.md`. Same
+   wording style as existing rows (one-line description, defaults in backticks).
+7. **Docs site updated.** `docs-site/src/content/docs/configuration.md` inputs table
+   AND the "Validation rules" list. If the new behaviour benefits from a worked
+   example, add one to `docs-site/src/content/docs/examples.md`. Other pages
+   (`quick-start`, `how-it-works`, `index`) only need touching if the change affects
+   the core flow or top-level pitch.
+8. **End-to-end wiring covered.** If the change adds a new `INPUT_*` env var, add an
+   `index.test.js` test that sets the env var and asserts the effect reaches the SVG
+   (or whichever output it influences). The per-module tests cover the pure layer;
+   `index.test.js` is the only place that proves the env-var-to-output path is wired.
+
+If any item is missing, do not commit — fix it first. The checklist is the
+operational form of the [Definition of done](#definition-of-done) below.
 
 ## Definition of done
 
