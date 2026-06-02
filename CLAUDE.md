@@ -171,6 +171,16 @@ text length × font-size, or text overflows). Width computation is pure and must
 Everything must be documented. "Done" is not "code works" — it's "code works AND a
 stranger can understand, install, configure, and contribute to it".
 
+Any important change (new/changed input, new/changed behaviour, new module,
+architectural shift, breaking change) requires updating **all three** of:
+
+1. JSDoc / inline docs in the affected code.
+2. The Astro + Starlight docs website under `/docs-site/`.
+3. `README.md`.
+
+Skipping `README.md` is not acceptable — it is the first thing a stranger reads, and it
+must stay in sync with the docs site and the code.
+
 Scope of "everything":
 - Every exported function and module has a JSDoc block (purpose, params, returns,
   thrown/warning behaviour). Pure modules document invariants (e.g. the upsert/dedup
