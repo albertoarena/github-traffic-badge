@@ -1,0 +1,57 @@
+---
+title: github-traffic-badge
+description: A GitHub Action that renders a customisable SVG traffic badge from real repository traffic data.
+template: splash
+hero:
+  tagline: An honest, fully tested traffic badge for your GitHub repositories — zero hosting, zero cost.
+  actions:
+    - text: Quick start
+      link: /github-traffic-badge/quick-start/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/albertoarena/github-traffic-badge
+      icon: external
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## What it is
+
+A GitHub Action that counts real **repository traffic** (views and clones from
+the official GitHub Traffic API) and renders a customisable SVG **badge**
+committed to a dedicated branch in your own repository.
+
+The Action runs entirely inside your own GitHub account on the free Actions
+runner. There is no hosted service, no external account, and no cost to either
+the maintainer or you.
+
+## What it is not
+
+It is **not** a profile-views counter. GitHub does not expose any profile-views
+API, and image-based "profile views" badges (proxied through GitHub's Camo
+image cache) are systematically undercounted and effectively unverifiable.
+This project is the honest alternative for **repositories**.
+
+<CardGrid>
+  <Card title="Trustworthy" icon="approve-check">
+    Numbers come from the official GitHub Traffic API. Persisted data lives in
+    your own repo as plain JSON on a dedicated branch you can audit.
+  </Card>
+  <Card title="Zero cost" icon="rocket">
+    Runs on the free Actions runner with the built-in `GITHUB_TOKEN`. No
+    server, no signup, no infrastructure to maintain.
+  </Card>
+  <Card title="Idempotent" icon="setting">
+    Date-keyed upsert prevents the 14-day overlap from double-counting.
+    Re-running on the same data is a no-op.
+  </Card>
+  <Card title="Zero dependencies" icon="seti:package">
+    Node 20+, built-in `fetch`, built-in test runner. Code you can read end
+    to end.
+  </Card>
+</CardGrid>
+
+## Repository
+
+[github.com/albertoarena/github-traffic-badge](https://github.com/albertoarena/github-traffic-badge)
