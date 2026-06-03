@@ -5,7 +5,10 @@ Build instructions for Claude Code. Read `ARCHITECTURE.md` before writing any co
 ## Project identity
 
 - **Repo / package name:** `github-traffic-badge`
-- **Action name** (in `action.yml`): `github-traffic-badge`
+- **Marketplace display name** (in `action.yml` `name:`): `Traffic Badge`
+  — GitHub Marketplace rejects action names containing the word "GitHub", so
+  the display name drops the prefix. The repo slug keeps `github-traffic-badge`
+  for SEO / marketing.
 - **Framing:** lead with "traffic **badge**" (the rendered SVG the user gets), never
   "counter". Avoid the word "counter" in user-facing docs — it re-inherits the unreliable
   framing of the project this improves on. Internal code identifiers may use neutral terms

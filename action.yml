@@ -1,4 +1,4 @@
-name: GitHub Traffic Badge
+name: Traffic Badge
 description: Render a customisable SVG traffic badge from real repository traffic data (views and clones), committed to a dedicated branch. Requires a PAT with repo or Administration:read access (the default GITHUB_TOKEN cannot read traffic endpoints).
 author: Alberto Arena
 

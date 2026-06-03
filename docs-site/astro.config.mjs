@@ -6,7 +6,7 @@ export default defineConfig({
   base: '/github-traffic-badge',
   integrations: [
     starlight({
-      title: 'GitHub Traffic Badge',
+      title: 'Traffic Badge',
       description:
         'A GitHub Action that renders a customisable SVG traffic badge from real repository traffic data.',
       social: {

@@ -1,4 +1,4 @@
-# GitHub Traffic Badge
+# Traffic Badge
 
 ![Repo views](https://raw.githubusercontent.com/albertoarena/github-traffic-badge/traffic-data/badge.svg)
 
@@ -53,7 +53,7 @@ Add a single workflow file to your repository — for example
 `.github/workflows/github-traffic-badge.yml`:
 
 ```yaml
-name: GitHub Traffic Badge
+name: Traffic Badge
 
 on:
   schedule:

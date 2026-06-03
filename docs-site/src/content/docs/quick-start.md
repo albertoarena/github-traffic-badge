@@ -25,7 +25,7 @@ variables → Actions**.
 Create `.github/workflows/github-traffic-badge.yml` in your repository:
 
 ```yaml
-name: GitHub Traffic Badge
+name: Traffic Badge
 
 on:
   schedule:

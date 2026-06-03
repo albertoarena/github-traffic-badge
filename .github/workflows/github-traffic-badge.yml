@@ -1,4 +1,4 @@
-name: GitHub Traffic Badge
+name: Traffic Badge
 
 on:
   schedule:
