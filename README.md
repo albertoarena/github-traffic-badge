@@ -1,5 +1,7 @@
 # GitHub Traffic Badge
 
+![Repo views](https://raw.githubusercontent.com/albertoarena/github-traffic-badge/traffic-data/badge.svg)
+
 A GitHub Action that renders a customisable SVG **traffic badge** from real
 repository traffic data (views and clones reported by the GitHub Traffic API),
 and commits it to a dedicated branch in your repo so you can embed it in any
