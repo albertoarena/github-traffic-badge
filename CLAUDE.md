@@ -89,7 +89,7 @@ Action inputs, all optional, parsed/validated in `src/options.js`:
 | `abbreviated` | `false` | `12345` → `12.3K`. |
 | `base` | `0` | integer added to total (migration from another counter). |
 | `output` | `badge.svg` | committed badge filename. |
-| `token` | `${{ github.token }}` | built-in token by default; PAT optional for org/all-repos. |
+| `token` | _(required)_ | PAT required — the built-in `GITHUB_TOKEN` returns 403 on Traffic API endpoints. Use a classic PAT with `repo` scope, or a fine-grained PAT with `Administration: read` on the target repo. |
 | `repos` | current repo | optional list/`all` to aggregate multiple repos. Keep default = single repo. |
 
 **Named colors** → maintain a small map (`blue`, `green`, `brightgreen`, `yellow`,
