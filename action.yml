@@ -93,11 +93,6 @@ runs:
         fi
         echo "TRAFFIC_WORKDIR=$workdir" >> "$GITHUB_ENV"
 
-    - name: Setup Node 20
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-
     - name: Compute traffic and render badge
       id: run
       shell: bash
