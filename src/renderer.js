@@ -58,9 +58,7 @@ export function abbreviate(n) {
       const scaled = abs / v;
       const formatted = scaled >= 100
         ? Math.trunc(scaled).toString()
-        : scaled >= 10
-          ? (Math.floor(scaled * 10) / 10).toString()
-          : (Math.floor(scaled * 10) / 10).toString();
+        : (Math.floor(scaled * 10) / 10).toString();
       return `${sign}${formatted}${s}`;
     }
   }
