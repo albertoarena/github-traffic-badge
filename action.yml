@@ -126,5 +126,5 @@ runs:
           echo "github-traffic-badge: no changes, skipping commit."
           exit 0
         fi
-        git commit -q -m "$COMMIT_MESSAGE"
+        printf '%s\n' "$COMMIT_MESSAGE" | git commit -q -F -
         git push -q origin "HEAD:${BRANCH}"
