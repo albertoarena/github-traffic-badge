@@ -65,8 +65,10 @@ export function abbreviate(n) {
   return `${sign}${Math.trunc(abs)}`;
 }
 
-function textWidth(text, fontSize) {
-  return text.length * fontSize * CHAR_WIDTH_RATIO;
+function textWidth(text, fontSize, letterSpacing = 0) {
+  const base = text.length * fontSize * CHAR_WIDTH_RATIO;
+  const spacing = Math.max(0, text.length - 1) * letterSpacing;
+  return base + spacing;
 }
 
 function styleGeometry(style, fontSize) {
@@ -106,8 +108,9 @@ export function render(total, options) {
   if (options.lowercase) labelText = labelText.toLowerCase();
   if (geom.uppercase) labelText = labelText.toUpperCase();
 
-  const labelW = Math.ceil(textWidth(labelText, fontSize) + SIDE_PADDING * 2);
-  const valueW = Math.ceil(textWidth(valueText, fontSize) + SIDE_PADDING * 2);
+  const ls = geom.letterSpacing || 0;
+  const labelW = Math.ceil(textWidth(labelText, fontSize, ls) + SIDE_PADDING * 2);
+  const valueW = Math.ceil(textWidth(valueText, fontSize, ls) + SIDE_PADDING * 2);
   const totalW = labelW + valueW;
   const h = geom.height;
   const r = geom.radius;

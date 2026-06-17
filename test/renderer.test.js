@@ -158,6 +158,33 @@ test('total is XML-escaped in case of weird inputs', () => {
   assert.ok(svg.includes('>42<'));
 });
 
+test('textWidth accounts for letter-spacing between characters', () => {
+  const without = _internals.textWidth('hello', 11, 0);
+  const withSpacing = _internals.textWidth('hello', 11, 1);
+  // 5 chars => 4 gaps, each gap adds 1px at letterSpacing=1.
+  assert.equal(withSpacing - without, 4);
+});
+
+test('textWidth with letterSpacing defaults to 0 (backwards compatible)', () => {
+  assert.equal(_internals.textWidth('abc', 11), _internals.textWidth('abc', 11, 0));
+});
+
+test('for-the-badge style widens the badge to account for letter-spacing', () => {
+  // Same font-size and same label length (uppercased) and same value length.
+  // The only width difference between flat and for-the-badge here is the
+  // letter-spacing="1" the latter applies. Expected extra width:
+  //   labelGaps + valueGaps = (10-1) + (3-1) = 11px.
+  const label = 'Repo Views';
+  const flat = render(123, defaults({ style: 'flat', label, fontSize: 11 }));
+  const ftb = render(123, defaults({ style: 'for-the-badge', label, fontSize: 11 }));
+  const wFlat = parseFloat(flat.match(/<svg[^>]*\bwidth="([\d.]+)"/)[1]);
+  const wFtb = parseFloat(ftb.match(/<svg[^>]*\bwidth="([\d.]+)"/)[1]);
+  assert.ok(
+    wFtb >= wFlat + 11,
+    `expected for-the-badge width ${wFtb} >= flat width ${wFlat} + 11 (letter-spacing)`
+  );
+});
+
 test('rendered SVG includes both label and value text nodes', () => {
   const svg = render(7, defaults({ label: 'Hits' }));
   const matches = svg.match(/<text\b/g) || [];
